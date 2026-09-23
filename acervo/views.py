@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.db.models import Q
 from .models import Autor, Livro, Exemplar, Membro, Empréstimo, Reserva
 from .forms import AutorForm, LivroForm, ExemplarForm, MembroForm, EmprestimoForm, ReservaForm
 
@@ -29,8 +30,33 @@ def criar_autor(request):
     return render(request, 'acervo/form_generico.html', {'form': form, 'titulo': 'Novo Autor'})
 
 def lista_livros(request):
-    livros = Livro.objects.select_related('autor').all()
-    return render(request, 'acervo/lista_livros.html', {'livros': livros})
+    livros = Livro.objects.all()
+
+    # Obtém os parâmetros da URL (Feature 1)
+    busca = request.GET.get('q', '').strip()
+    tipo_acervo = request.GET.get('tipo_acervo', '')
+    categoria = request.GET.get('categoria', '')
+
+    # Filtro de busca textual por título ou autor
+    if busca:
+        livros = livros.filter(
+            Q(titulo__icontains=busca) | Q(autor__nome__icontains=busca)
+        )
+
+    # Filtro por tipo de acervo (Físico ou Digital)
+    if tipo_acervo:
+        livros = livros.filter(tipo_acervo=tipo_acervo)
+
+    # Filtro por categoria (000 a 900)
+    if categoria:
+        livros = livros.filter(categoria=categoria)
+
+    context = {
+        'livros': livros,
+        'tipos_acervo': Livro.TIPO_ACERVO_CHOICES,
+        'categorias': Livro.CATEGORIA_CHOICES,
+    }
+    return render(request, 'acervo/lista_livros.html', context)
 
 def criar_livro(request):
     form = LivroForm(request.POST or None)
@@ -71,7 +97,11 @@ def realizar_emprestimo(request):
     form = EmprestimoForm(request.POST or None)
     if form.is_valid():
         emprestimo = form.save()
-        reserva = Reserva.objects.filter(livro=emprestimo.exemplar.livro, membro=emprestimo.membro, status='AGUARDANDO').first()
+        reserva = Reserva.objects.filter(
+            livro=emprestimo.exemplar.livro, 
+            membro=emprestimo.membro, 
+            status='AGUARDANDO'
+        ).first()
         if reserva:
             reserva.status = 'ATENDIDA'
             reserva.save()

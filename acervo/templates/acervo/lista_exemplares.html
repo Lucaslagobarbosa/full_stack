@@ -1,0 +1,19 @@
+{% extends 'acervo/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Exemplares</h2>
+    <a href="{% url 'criar_exemplar' %}" class="btn btn-primary">+ Novo Exemplar</a>
+</div>
+<div class="card shadow-sm"><div class="card-body">
+    <table class="table table-striped">
+        <thead><tr><th>Patrimônio</th><th>Livro</th><th>Status</th></tr></thead>
+        <tbody>
+            {% for e in exemplares %}
+            <tr><td>{{ e.codigo_patrimonio }}</td><td>{{ e.livro.titulo }}</td><td><span class="badge bg-secondary">{{ e.get_status_display }}</span></td></tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-center text-muted">Nenhum exemplar cadastrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div></div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'acervo/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Livros</h2>
+    <a href="{% url 'criar_livro' %}" class="btn btn-primary">+ Novo Livro</a>
+</div>
+<div class="card shadow-sm"><div class="card-body">
+    <table class="table table-striped">
+        <thead><tr><th>Título</th><th>ISBN</th><th>Autor</th><th>Ano</th></tr></thead>
+        <tbody>
+            {% for l in livros %}
+            <tr><td>{{ l.titulo }}</td><td>{{ l.isbn }}</td><td>{{ l.autor.nome }}</td><td>{{ l.ano_publicacao }}</td></tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center text-muted">Nenhum livro cadastrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div></div>
+{% endblock %}

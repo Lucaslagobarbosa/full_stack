@@ -1,0 +1,19 @@
+{% extends 'acervo/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Autores</h2>
+    <a href="{% url 'criar_autor' %}" class="btn btn-primary">+ Novo Autor</a>
+</div>
+<div class="card shadow-sm"><div class="card-body">
+    <table class="table table-striped">
+        <thead><tr><th>Nome</th><th>Nacionalidade</th></tr></thead>
+        <tbody>
+            {% for a in autores %}
+            <tr><td>{{ a.nome }}</td><td>{{ a.nacionalidade|default:"-" }}</td></tr>
+            {% empty %}
+            <tr><td colspan="2" class="text-center text-muted">Nenhum autor cadastrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div></div>
+{% endblock %}

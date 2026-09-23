@@ -1,0 +1,16 @@
+{% extends 'acervo/base.html' %}
+{% block content %}
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold text-primary">Gestão de Acervo e Biblioteca</h1>
+        <p class="col-md-8 fs-4 text-muted">Painel de controle alternativo para o P1 de Desenvolvimento Web Full Stack.</p>
+        <hr class="my-4">
+        <div class="row text-center">
+            <div class="col-md-3"><div class="p-3 border bg-light rounded"><h3>{{ total_livros }}</h3><span>Livros</span></div></div>
+            <div class="col-md-3"><div class="p-3 border bg-light rounded"><h3>{{ total_membros }}</h3><span>Membros</span></div></div>
+            <div class="col-md-3"><div class="p-3 border bg-light rounded"><h3>{{ emprestivos_ativos }}</h3><span>Empréstimos Ativos</span></div></div>
+            <div class="col-md-3"><div class="p-3 border bg-light rounded"><h3>{{ reservas_pendentes }}</h3><span>Reservas Pendentes</span></div></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

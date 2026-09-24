@@ -1,19 +1,59 @@
 {% extends 'acervo/base.html' %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Exemplares</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Exemplares do Acervo</h2>
     <a href="{% url 'criar_exemplar' %}" class="btn btn-primary">+ Novo Exemplar</a>
 </div>
-<div class="card shadow-sm"><div class="card-body">
-    <table class="table table-striped">
-        <thead><tr><th>Patrimônio</th><th>Livro</th><th>Status</th></tr></thead>
-        <tbody>
-            {% for e in exemplares %}
-            <tr><td>{{ e.codigo_patrimonio }}</td><td>{{ e.livro.titulo }}</td><td><span class="badge bg-secondary">{{ e.get_status_display }}</span></td></tr>
-            {% empty %}
-            <tr><td colspan="3" class="text-center text-muted">Nenhum exemplar cadastrado.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div></div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Código Patrimônio</th>
+                        <th>Livro</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações Rápidas (Feature 2)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in exemplares %}
+                    <tr>
+                        <td>{{ e.codigo_patrimonio }}</td>
+                        <td>{{ e.livro.titulo }}</td>
+                        <td>
+                            {% if e.status == 'DISPONIVEL' %}
+                                <span class="badge bg-success">Disponível</span>
+                            {% elif e.status == 'EMPRESTADO' %}
+                                <span class="badge bg-warning text-dark">Emprestado</span>
+                            {% else %}
+                                <span class="badge bg-danger">Em Manutenção</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if e.status != 'EMPRESTADO' %}
+                                <a href="{% url 'alternar_status_exemplar' e.pk %}" class="btn btn-sm btn-outline-secondary">
+                                    {% if e.status == 'DISPONIVEL' %}
+                                        Enviar p/ Manutenção
+                                    {% else %}
+                                        Tornar Disponível
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                <span class="text-muted small">Em uso</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">Nenhum exemplar cadastrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

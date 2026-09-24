@@ -131,3 +131,18 @@ def criar_reserva(request):
         form.save()
         return redirect('lista_reservas')
     return render(request, 'acervo/form_generico.html', {'form': form, 'titulo': 'Nova Reserva'})
+
+def alternar_status_exemplar(request, pk):
+    """
+    Feature 2 - Regra de Negócio:
+    Permite alterar rapidamente o status de um exemplar (DISPONIVEL / MANUTENCAO).
+    """
+    exemplar = get_object_or_404(Exemplar, pk=pk)
+    
+    if exemplar.status == 'DISPONIVEL':
+        exemplar.status = 'MANUTENCAO'
+    elif exemplar.status == 'MANUTENCAO':
+        exemplar.status = 'DISPONIVEL'
+    
+    exemplar.save()
+    return redirect('lista_exemplares')

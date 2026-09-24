@@ -9,6 +9,7 @@ urlpatterns = [
     path('livros/novo/', views.criar_livro, name='criar_livro'),
     path('exemplares/', views.lista_exemplares, name='lista_exemplares'),
     path('exemplares/novo/', views.criar_exemplar, name='criar_exemplar'),
+    path('exemplares/<int:pk>/alternar-status/', views.alternar_status_exemplar, name='alternar_status_exemplar'),
     path('membros/', views.lista_membros, name='lista_membros'),
     path('membros/novo/', views.criar_membro, name='criar_membro'),
     path('emprestimos/', views.lista_emprestimos, name='lista_emprestimos'),

@@ -1,19 +1,96 @@
 {% extends 'acervo/base.html' %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Livros</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Acervo de Livros</h2>
     <a href="{% url 'criar_livro' %}" class="btn btn-primary">+ Novo Livro</a>
 </div>
-<div class="card shadow-sm"><div class="card-body">
-    <table class="table table-striped">
-        <thead><tr><th>Título</th><th>ISBN</th><th>Autor</th><th>Ano</th></tr></thead>
-        <tbody>
-            {% for l in livros %}
-            <tr><td>{{ l.titulo }}</td><td>{{ l.isbn }}</td><td>{{ l.autor.nome }}</td><td>{{ l.ano_publicacao }}</td></tr>
-            {% empty %}
-            <tr><td colspan="4" class="text-center text-muted">Nenhum livro cadastrado.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div></div>
+
+<!-- Card com o Formulário de Busca e Filtros -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET">
+            <div class="row g-3">
+                <!-- Busca textual por título ou autor -->
+                <div class="col-md-4">
+                    <input 
+                        type="text" 
+                        name="q" 
+                        class="form-control" 
+                        placeholder="Buscar por título ou autor..." 
+                        value="{{ request.GET.q }}"
+                    >
+                </div>
+
+                <!-- Filtro por Tipo de Acervo -->
+                <div class="col-md-3">
+                    <select name="tipo_acervo" class="form-select">
+                        <option value="">-- Todos os Tipos --</option>
+                        {% for valor, rotulo in tipos_acervo %}
+                            <option value="{{ valor }}" {% if request.GET.tipo_acervo == valor %}selected{% endif %}>
+                                {{ rotulo }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Filtro por Categoria -->
+                <div class="col-md-3">
+                    <select name="categoria" class="form-select">
+                        <option value="">-- Todas as Categorias --</option>
+                        {% for valor, rotulo in categorias %}
+                            <option value="{{ valor }}" {% if request.GET.categoria == valor %}selected{% endif %}>
+                                {{ valor }} - {{ rotulo }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+                    <a href="{% url 'lista_livros' %}" class="btn btn-outline-secondary">Limpar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Card com a Tabela de Livros -->
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>ISBN</th>
+                        <th>Ano</th>
+                        <th>Tipo de Acervo</th>
+                        <th>Categoria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for l in livros %}
+                    <tr>
+                        <td>{{ l.titulo }}</td>
+                        <td>{{ l.autor.nome }}</td>
+                        <td>{{ l.isbn }}</td>
+                        <td>{{ l.ano_publicacao }}</td>
+                        <td>{{ l.get_tipo_acervo_display }}</td>
+                        <td>{{ l.get_categoria_display }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            Nenhum livro encontrado com os filtros aplicados.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}
